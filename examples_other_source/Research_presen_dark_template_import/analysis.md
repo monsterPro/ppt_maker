@@ -1,0 +1,74 @@
+# Template Import Analysis - Research_presen_dark.pptx
+
+## Summary
+- Slide size: 1280 x 720 px
+- Theme colors: accent1, accent2, accent3, accent4, accent5, accent6, dk1, dk2, folHlink, hlink, lt1, lt2
+- Theme fonts: majorLatin=Arial, minorLatin=Arial
+- Common assets: 1
+
+## Slide Candidates
+- Slide 1: cover_candidate
+  - Name: slide1.xml
+  - Background: none (n/a)
+  - Images: 2
+  - Text sample: RESEARCH INTELLIGENCE | VISTA4D | Video Reshooting with 4D-Grounded Point Clouds
+- Slide 2: chapter_candidate
+  - Name: slide2.xml
+  - Background: none (n/a)
+  - Images: 1
+  - Text sample: Technical Foundations | Breaking down the limitations of prior methods and the Vista4D architectural shift.
+- Slide 3: toc_candidate
+  - Name: slide3.xml
+  - Background: none (n/a)
+  - Images: 2
+  - Text sample: Latent Instability | Implicit models (CamClone, TrajectoryCrafter) rely on latent camera conditioning. While visually clean, they cannot strictly enforce the | target trajectory
+- Slide 4: content_candidate
+  - Name: slide4.xml
+  - Background: none (n/a)
+  - Images: 5
+  - Text sample: Vista4D grounds reshooting in a | Temporally Persistent 4D Point Cloud | to provide a rigid geometric anchor for generative synthesis.
+- Slide 5: content_candidate
+  - Name: slide5.xml
+  - Background: none (n/a)
+  - Images: 3
+  - Text sample: TEMPORAL PERSISTENCE | Unlike per-frame depth methods, Vista4D accumulates | static scene context
+- Slide 6: content_candidate
+  - Name: slide6.xml
+  - Background: none (n/a)
+  - Images: 7
+  - Text sample: Decomposition | Separating dynamic actors from static background pixels to build persistent 4D context. | Noisy Training
+- Slide 7: toc_candidate
+  - Name: slide7.xml
+  - Background: none (n/a)
+  - Images: 1
+  - Text sample: 170K | Video Clips | Hybrid Data Strategy
+- Slide 8: content_candidate
+  - Name: slide8.xml
+  - Background: none (n/a)
+  - Images: 1
+  - Text sample: Vista4D achieves state-of-the-art camera accuracy and video realism simultaneously. | Method | RotE (Deg) ↓
+- Slide 9: chapter_candidate
+  - Name: slide9.xml
+  - Background: none (n/a)
+  - Images: 2
+  - Text sample: Lower rotation error reflects tighter adherence to the specified target camera path. | PRECISION: ROTATION ERROR (ROTE)
+- Slide 10: chapter_candidate
+  - Name: slide10.xml
+  - Background: none (n/a)
+  - Images: 3
+  - Text sample: Wan2.1-T2V Scale | The model architecture is built on the 14B parameter Wan2.1 video diffusion prior. By fine-tuning the camera encoder and projector layers, Vista4D gains a deep understanding of spatial geometry while maintaining the base model's world-class motion synthesis capability. | GENERATIVE TRANSFORMER BACKBONE
+- Slide 11: chapter_candidate
+  - Name: slide11.xml
+  - Background: none (n/a)
+  - Images: 1
+  - Text sample: "Vista4D resolves the fundamental tension between explicit geometric control and generative imagination in video reshooting." | — Eyeline Labs Research Briefing 2026 | "
+- Slide 12: content_candidate
+  - Name: slide12.xml
+  - Background: none (n/a)
+  - Images: 4
+  - Text sample: Questions? | Explore the 4D reshooting future. | github.com/vista4d
+- Slide 13: ending_candidate
+  - Name: slide13.xml
+  - Background: none (n/a)
+  - Images: 4
+  - Text sample: https://derivative.ca/sites/default/files/styles/project_teaser/public/field/image/Capture-Resemble-6.jpg | Source: | derivative.ca

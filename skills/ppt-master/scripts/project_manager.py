@@ -138,6 +138,7 @@ class ProjectManager:
             "svg_final",
             "images",
             "notes",
+            "slides",
             "templates",
             SOURCE_DIRNAME,
             "exports",
@@ -156,6 +157,7 @@ class ProjectManager:
                 "- `svg_final/`: finalized SVG output\n"
                 "- `images/`: presentation assets\n"
                 "- `notes/`: speaker notes\n"
+                "- `slides/`: per-slide text source layer (slot:value); see `references/slides-text-layer.md`\n"
                 "- `templates/`: project templates\n"
                 "- `sources/`: source materials and normalized markdown\n"
                 "- `exports/`: main native pptx (timestamped)\n"

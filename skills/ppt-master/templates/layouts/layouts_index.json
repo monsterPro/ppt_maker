@@ -59,6 +59,11 @@
     "summary": "A warm and professional template for psychotherapy training and counseling lectures",
     "keywords": ["Psychology", "Healing", "Counseling", "Warm"]
   },
+  "research_dark": {
+    "label": "Research Dark Template",
+    "summary": "A cinematic dark CVPR-style research template using Poppins + Lato typography for technical talks, method highlights, architecture summaries, and benchmark results",
+    "keywords": ["Research", "CVPR", "Computer vision", "AI", "Dark tech", "Poppins"]
+  },
   "smart_red": {
     "label": "Smart Red-Orange Business Template",
     "summary": "A vibrant business template for tech company introductions and education solutions",

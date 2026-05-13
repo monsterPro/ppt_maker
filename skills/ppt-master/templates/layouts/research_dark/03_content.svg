@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <radialGradient id="bgGlow" cx="85%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#4C1D95" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#05050A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#05050A"/>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- Left accent mark — vertically aligned with title cap height -->
+  <rect x="60" y="67" width="3" height="40" fill="#A855F7"/>
+
+  <!-- Page title — ALL CAPS, Poppins bold, mirrors PPTX position (x=81, baseline≈100) -->
+  <text x="81" y="100" font-family="Poppins, Arial, sans-serif" font-size="43" font-weight="700" fill="#FFFFFF">{{PAGE_TITLE}}</text>
+
+  <!-- Thin title underline accent -->
+  <rect x="81" y="118" width="1118" height="1" fill="#A855F7" fill-opacity="0.20"/>
+
+  <!-- Content area placeholder (Executor replaces this entire group) -->
+  <rect x="60" y="150" width="1160" height="470" rx="10" fill="#0D0D14" fill-opacity="0.60" stroke="#1E1E2E" stroke-width="1" stroke-dasharray="6,6"/>
+  <text x="640" y="395" text-anchor="middle" font-family="Lato, Arial, sans-serif" font-size="22" fill="#2D2D40">{{CONTENT_AREA}}</text>
+
+  <!-- Footer -->
+  <text x="81" y="675" font-family="Lato, Arial, sans-serif" font-size="13" fill="#64748B">{{SOURCE}}</text>
+  <text x="1199" y="675" text-anchor="end" font-family="Lato, Arial, sans-serif" font-size="13" fill="#64748B">{{PAGE_NUM}}</text>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g id="background">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+  <g id="header">
+    <rect x="0" y="0" width="320" height="6" fill="#4285F4"/>
+    <rect x="320" y="0" width="320" height="6" fill="#EA4335"/>
+    <rect x="640" y="0" width="320" height="6" fill="#FBBC04"/>
+    <rect x="960" y="0" width="320" height="6" fill="#34A853"/>
+    <text data-slot="header.1" x="72" y="92" font-family="Arial, sans-serif" font-size="46" font-weight="700" fill="#1A237E">Key Takeaways</text>
+    <rect x="72" y="116" width="150" height="4" fill="#4285F4"/>
+    <rect x="222" y="116" width="70" height="4" fill="#EA4335"/>
+    <rect x="292" y="116" width="70" height="4" fill="#FBBC04"/>
+    <rect x="362" y="116" width="170" height="4" fill="#34A853"/>
+  </g>
+  <g id="tk1">
+    <text data-slot="tk1.1" x="82" y="198" font-family="Arial, sans-serif" font-size="56" font-weight="700" fill="#4285F4">01</text>
+    <text data-slot="tk1.2" x="170" y="186" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1A237E">NeRF opened representation quality; 3DGS opened real-time rendering.</text>
+    <text data-slot="tk1.3" x="170" y="222" font-family="Arial, sans-serif" font-size="20" fill="#5F6368">Same image formation model, different primitive and rasterization strategy.</text>
+    <rect x="170" y="252" width="1030" height="1" fill="#E8EAED"/>
+  </g>
+  <g id="tk2">
+    <text data-slot="tk2.1" x="82" y="350" font-family="Arial, sans-serif" font-size="56" font-weight="700" fill="#EA4335">02</text>
+    <text data-slot="tk2.2" x="170" y="338" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1A237E">Feed-forward 3DGS removes the per-scene optimization bottleneck.</text>
+    <text data-slot="tk2.3" x="170" y="374" font-family="Arial, sans-serif" font-size="20" fill="#5F6368">Millisecond inference enables product-scale AR, robotics, and large-scale mapping.</text>
+    <rect x="170" y="404" width="1030" height="1" fill="#E8EAED"/>
+  </g>
+  <g id="tk3">
+    <text data-slot="tk3.1" x="82" y="502" font-family="Arial, sans-serif" font-size="56" font-weight="700" fill="#34A853">03</text>
+    <text data-slot="tk3.2" x="170" y="490" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1A237E">World models go beyond reconstruction.</text>
+    <text data-slot="tk3.3" x="170" y="526" font-family="Arial, sans-serif" font-size="20" fill="#5F6368">They add temporal dynamics, generative capability, and interaction reasoning.</text>
+  </g>
+  <g id="footer">
+    <text x="72" y="675" font-family="Arial, sans-serif" font-size="14" fill="#9AA0A6">VisualSol Template Validation</text>
+    <text x="1208" y="675" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#9AA0A6">05 / 06</text>
+  </g>
+</svg>

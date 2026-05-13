@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="cardBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F8F9FA"/>
+    </linearGradient>
+  </defs>
+  <g id="background">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <rect x="0" y="0" width="10" height="180" fill="#4285F4"/>
+    <rect x="0" y="180" width="10" height="180" fill="#EA4335"/>
+    <rect x="0" y="360" width="10" height="180" fill="#FBBC04"/>
+    <rect x="0" y="540" width="10" height="180" fill="#34A853"/>
+  </g>
+  <g id="cover-card">
+    <rect x="170" y="145" width="940" height="410" rx="24" fill="url(#cardBg)" stroke="#E8EAED" stroke-width="2"/>
+    <text data-slot="category-label.1" x="640" y="218" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#4285F4" text-anchor="middle" letter-spacing="2">VISUALSOL TEMPLATE VALIDATION</text>
+    <rect x="530" y="236" width="55" height="4" fill="#4285F4"/>
+    <rect x="585" y="236" width="45" height="4" fill="#EA4335"/>
+    <rect x="630" y="236" width="45" height="4" fill="#FBBC04"/>
+    <rect x="675" y="236" width="75" height="4" fill="#34A853"/>
+    <text data-slot="main-title.1" x="640" y="326" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#1A237E" text-anchor="middle">3D Scene Reconstruction</text>
+    <text data-slot="main-title.2" x="640" y="382" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#1A237E" text-anchor="middle">&amp; Generation</text>
+    <text data-slot="subtitle.1" x="640" y="438" font-family="Arial, sans-serif" font-size="24" fill="#5F6368" text-anchor="middle">From per-scene optimization to feed-forward inference</text>
+    <text data-slot="author-date.1" x="640" y="492" font-family="Arial, sans-serif" font-size="18" fill="#9AA0A6" text-anchor="middle">Advanced Multimedia Lab | May 2026</text>
+  </g>
+</svg>

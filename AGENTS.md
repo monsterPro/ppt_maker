@@ -20,6 +20,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 
 - Read [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) before starting a PPT task.
 - For standalone template creation, read [`skills/ppt-master/workflows/create-template.md`](skills/ppt-master/workflows/create-template.md).
+- **Text box editing comfort**: Read [`skills/ppt-master/references/textbox-consolidation.md`](skills/ppt-master/references/textbox-consolidation.md) for guidance on generating clean, editable text.
 - Role-specific rules live in [`skills/ppt-master/references/`](skills/ppt-master/references/).
 - Technical SVG/PPT constraints live in [`skills/ppt-master/references/shared-standards.md`](skills/ppt-master/references/shared-standards.md).
 - Canvas choices live in [`skills/ppt-master/references/canvas-formats.md`](skills/ppt-master/references/canvas-formats.md).
@@ -57,6 +58,12 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
+
+# Slides text layer (per-slide text source — see references/slides-text-layer.md)
+python3 skills/ppt-master/scripts/slides_init.py <project_path>            # one-time bootstrap of data-slot markers
+python3 skills/ppt-master/scripts/slides_extract.py <project_path>         # SVG -> slides/*.md
+python3 skills/ppt-master/scripts/slides_apply.py <project_path>           # slides/*.md -> SVG (text-only edits)
+python3 skills/ppt-master/scripts/slides_plan_refresh.py <project_path>    # slides/*.md -> slides/_plan.md (one-way derive of §4/§5 derivable cells)
 ```
 
 ## Core Directories

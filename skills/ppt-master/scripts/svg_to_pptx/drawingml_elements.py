@@ -717,6 +717,125 @@ def _build_text_runs(
     return runs
 
 
+def _build_text_lines(
+    elem: ET.Element,
+    parent_attrs: dict[str, Any],
+) -> list[list[dict[str, Any]]]:
+    """Build text as paragraph lines, preserving explicit line tspans."""
+    line_children = []
+    for child in elem:
+        child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        if child_tag == 'tspan' and (
+            child.get('data-line') == 'true' or child.get('y') or child.get('dy')
+        ):
+            line_children.append(child)
+
+    if not line_children:
+        runs = _build_text_runs(elem, parent_attrs)
+        return [runs] if runs else []
+
+    lines: list[list[dict[str, Any]]] = []
+    for child in line_children:
+        runs = _collect_tspan_runs(child, parent_attrs)
+        if runs:
+            lines.append(runs)
+    return lines
+
+
+_BULLET_PREFIX_RE = re.compile(r'^\s*(?P<marker>[•◦‣·]|[-*])\s+')
+_TRUE_VALUES = {'1', 'true', 'yes', 'on'}
+_FALSE_VALUES = {'0', 'false', 'no', 'off', 'none'}
+
+
+def _truthy_attr(value: str | None) -> bool:
+    """Return True for explicit truthy SVG data attributes."""
+    return value is not None and value.strip().lower() in _TRUE_VALUES
+
+
+def _falsey_attr(value: str | None) -> bool:
+    """Return True for explicit falsey SVG data attributes."""
+    return value is not None and value.strip().lower() in _FALSE_VALUES
+
+
+def _run_language(text: str) -> str:
+    """Infer the DrawingML run language from the actual text content."""
+    for ch in text:
+        cp = ord(ch)
+        if 0xAC00 <= cp <= 0xD7AF or 0x1100 <= cp <= 0x11FF or 0x3130 <= cp <= 0x318F:
+            return 'ko-KR'
+        if 0x3040 <= cp <= 0x309F or 0x30A0 <= cp <= 0x30FF:
+            return 'ja-JP'
+        if is_cjk_char(ch):
+            return 'zh-CN'
+    return 'en-US'
+
+
+def _apply_bullet_metadata(elem: ET.Element, runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Mark a paragraph as a native PPT bullet when requested or text-marked.
+
+    Supported SVG hints:
+      - data-bullet="true"
+      - data-bullet-char="•"
+      - data-bullet-level="0"
+
+    Literal prefixes such as "• item", "- item", and "* item" are also
+    converted to native bullet metadata, with the visible prefix removed.
+    """
+    if not runs:
+        return runs
+
+    bullet_attr = elem.get('data-bullet') or elem.get('data-list')
+    if _falsey_attr(bullet_attr):
+        return runs
+
+    explicit_bullet = _truthy_attr(bullet_attr)
+    first_text_idx = next((i for i, r in enumerate(runs) if r.get('text')), None)
+    if first_text_idx is None:
+        return runs
+
+    marker_match = _BULLET_PREFIX_RE.match(str(runs[first_text_idx].get('text', '')))
+    if not explicit_bullet and not marker_match:
+        return runs
+
+    updated = [dict(run) for run in runs]
+    bullet_char = elem.get('data-bullet-char') or '•'
+    if marker_match:
+        marker = marker_match.group('marker')
+        bullet_char = '•' if marker in ('-', '*', '·') else marker
+        text = str(updated[first_text_idx].get('text', ''))
+        updated[first_text_idx]['text'] = text[marker_match.end():]
+
+    try:
+        level = max(0, int(elem.get('data-bullet-level') or '0'))
+    except ValueError:
+        level = 0
+
+    updated[first_text_idx]['_bullet'] = {
+        'char': bullet_char[:1] or '•',
+        'level': level,
+    }
+    return updated
+
+
+def _paragraph_props_xml(algn: str, runs: list[dict[str, Any]]) -> str:
+    """Build paragraph properties, including native bullet metadata."""
+    bullet = next((r.get('_bullet') for r in runs if r.get('_bullet')), None)
+    if not bullet:
+        return f'<a:pPr algn="{algn}"/>'
+
+    level = int(bullet.get('level', 0))
+    mar_l = px_to_emu(24 + level * 18)
+    indent = -px_to_emu(14)
+    bullet_char = _xml_escape(str(bullet.get('char') or '•'))
+    bullet_fonts = parse_font_family(str(runs[0].get('font_family') or ''))
+    bullet_font = _xml_escape(bullet_fonts['latin'])
+
+    return f'''<a:pPr algn="{algn}" marL="{mar_l}" indent="{indent}">
+<a:buFont typeface="{bullet_font}"/>
+<a:buChar char="{bullet_char}"/>
+</a:pPr>'''
+
+
 def _build_run_xml(
     run: dict[str, Any],
     default_fonts: dict[str, str],
@@ -742,6 +861,7 @@ def _build_run_xml(
     strike_attr = ' strike="sngStrike"' if 'line-through' in text_dec else ''
 
     fonts = parse_font_family(ff) if ff else default_fonts
+    lang = _run_language(text)
 
     # Build fill XML - gradient or solid
     grad_id = resolve_url_id(fill_raw)
@@ -754,7 +874,7 @@ def _build_run_xml(
         fill_xml = f'<a:solidFill><a:srgbClr val="{fill}">{alpha_xml}</a:srgbClr></a:solidFill>'
 
     return f'''<a:r>
-<a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr} dirty="0">
+<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr} dirty="0">
 {fill_xml}
 {effect_xml}
 <a:latin typeface="{_xml_escape(fonts['latin'])}"/>
@@ -765,8 +885,80 @@ def _build_run_xml(
 </a:r>'''
 
 
+def _should_auto_consolidate(runs: list[dict[str, Any]]) -> bool:
+    """Heuristic: consolidate if many runs have same styling (likely segmented inline text).
+
+    Returns True if > 50% of adjacent run pairs have identical styling, suggesting
+    the text was split for reasons other than intentional formatting changes.
+    """
+    if len(runs) <= 1:
+        return False
+
+    compatible_pairs = 0
+    total_pairs = len(runs) - 1
+
+    for i in range(len(runs) - 1):
+        curr = runs[i]
+        next_r = runs[i + 1]
+        if (curr.get('fill') == next_r.get('fill') and
+            curr.get('font_weight') == next_r.get('font_weight') and
+            curr.get('font_size') == next_r.get('font_size') and
+            curr.get('font_family') == next_r.get('font_family') and
+            curr.get('font_style') == next_r.get('font_style')):
+            compatible_pairs += 1
+
+    return compatible_pairs > total_pairs * 0.5
+
+
+def _consolidate_compatible_runs(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Merge adjacent runs with compatible styling (same color, font, weight, etc.).
+
+    This reduces segmentation in PPTX text boxes, making them easier to edit in PowerPoint.
+    Preserves the original run structure if consolidation would lose important styling.
+    """
+    if len(runs) <= 1:
+        return runs
+
+    consolidated: list[dict[str, Any]] = []
+    current = None
+
+    for run in runs:
+        if current is None:
+            current = dict(run)
+        else:
+            # Check if run has compatible styling with current
+            compatible = (
+                run.get('fill') == current.get('fill') and
+                run.get('fill_raw') == current.get('fill_raw') and
+                run.get('font_weight') == current.get('font_weight') and
+                run.get('font_size') == current.get('font_size') and
+                run.get('font_family') == current.get('font_family') and
+                run.get('font_style') == current.get('font_style') and
+                run.get('text_decoration') == current.get('text_decoration') and
+                run.get('opacity') == current.get('opacity')
+            )
+
+            if compatible:
+                # Merge text content
+                current['text'] = current.get('text', '') + run.get('text', '')
+            else:
+                # Save current run and start new one
+                consolidated.append(current)
+                current = dict(run)
+
+    if current is not None:
+        consolidated.append(current)
+
+    return consolidated
+
+
 def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
-    """Convert SVG <text> to DrawingML text shape with multi-run support."""
+    """Convert SVG <text> to DrawingML text shape with multi-run support.
+
+    When data-consolidate="true" attribute is present on the text element,
+    adjacent runs with compatible styling are merged to reduce segmentation
+    and improve PowerPoint editing experience.
+    """
     x = ctx_x(_f(elem.get('x')), ctx)
     y = ctx_y(_f(elem.get('y')), ctx)
     font_size = _f(_get_attr(elem, 'font-size', ctx), 16) * ctx.scale_y
@@ -791,18 +983,30 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         'text_decoration': text_decoration,
         'opacity': opacity,
     }
-    runs = _build_text_runs(elem, parent_attrs)
+    lines = _build_text_lines(elem, parent_attrs)
 
-    if not runs:
+    # Consolidate runs if requested or if multiple tspans exist with minimal styling difference
+    consolidated_lines: list[list[dict[str, Any]]] = []
+    for runs in lines:
+        if elem.get('data-consolidate') == 'true' or (len(runs) > 3 and _should_auto_consolidate(runs)):
+            runs = _consolidate_compatible_runs(runs)
+        runs = _apply_bullet_metadata(elem, runs)
+        if runs:
+            consolidated_lines.append(runs)
+    lines = consolidated_lines
+
+    if not lines:
         return None
 
-    full_text = ''.join(r['text'] for r in runs)
+    line_texts = [''.join(r['text'] for r in runs) for runs in lines]
+    full_text = '\n'.join(line_texts)
     if not full_text.strip():
         return None
 
     # Estimate text dimensions
-    text_width = estimate_text_width(full_text, font_size, font_weight) * 1.15
-    text_height = font_size * 1.5
+    widest_line = max(line_texts, key=lambda t: estimate_text_width(t, font_size, font_weight))
+    text_width = estimate_text_width(widest_line, font_size, font_weight) * 1.15
+    text_height = font_size * (1.3 * max(1, len(lines)) + 0.2)
     padding = font_size * 0.1
 
     # Adjust position based on text-anchor
@@ -874,7 +1078,15 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     shape_id = ctx.next_id()
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
 
-    runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in runs)
+    paragraphs_xml = []
+    for runs in lines:
+        runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in runs)
+        paragraph_props = _paragraph_props_xml(algn, runs)
+        paragraphs_xml.append(f'''<a:p>
+{paragraph_props}
+{runs_xml}
+</a:p>''')
+    text_paragraphs_xml = '\n'.join(paragraphs_xml)
     off_x = px_to_emu(box_x)
     off_y = px_to_emu(box_y)
     ext_cx = px_to_emu(box_w)
@@ -898,10 +1110,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <a:spAutoFit/>
 </a:bodyPr>
 <a:lstStyle/>
-<a:p>
-<a:pPr algn="{algn}"/>
-{runs_xml}
-</a:p>
+{text_paragraphs_xml}
 </p:txBody>
 </p:sp>''', bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
 

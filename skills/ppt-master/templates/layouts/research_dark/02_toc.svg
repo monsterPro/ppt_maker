@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <radialGradient id="bgGlow" cx="85%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.20"/>
+      <stop offset="45%" stop-color="#4C1D95" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#05050A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#05050A"/>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- Left accent mark — vertically aligned with title cap height -->
+  <rect x="60" y="67" width="3" height="40" fill="#A855F7"/>
+
+  <!-- Page title -->
+  <text x="81" y="100" font-family="Poppins, Arial, sans-serif" font-size="43" font-weight="700" fill="#FFFFFF">CONTENTS</text>
+  <rect x="81" y="118" width="1118" height="1" fill="#A855F7" fill-opacity="0.20"/>
+
+  <!-- TOC items — two-column layout (left col: items 1-3, right col: items 4-6) -->
+  <!-- Left column -->
+  <g>
+    <!-- Item 1 -->
+    <text x="81" y="185" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7">01</text>
+    <text x="120" y="185" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{{TOC_ITEM_1_TITLE}}</text>
+    <text x="120" y="210" font-family="Lato, Arial, sans-serif" font-size="16" fill="#64748B">{{TOC_ITEM_1_DESC}}</text>
+    <rect x="81" y="228" width="520" height="1" fill="#1E1E2E"/>
+
+    <!-- Item 2 -->
+    <text x="81" y="265" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7">02</text>
+    <text x="120" y="265" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{{TOC_ITEM_2_TITLE}}</text>
+    <text x="120" y="290" font-family="Lato, Arial, sans-serif" font-size="16" fill="#64748B">{{TOC_ITEM_2_DESC}}</text>
+    <rect x="81" y="308" width="520" height="1" fill="#1E1E2E"/>
+
+    <!-- Item 3 -->
+    <text x="81" y="345" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7">03</text>
+    <text x="120" y="345" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{{TOC_ITEM_3_TITLE}}</text>
+    <text x="120" y="370" font-family="Lato, Arial, sans-serif" font-size="16" fill="#64748B">{{TOC_ITEM_3_DESC}}</text>
+    <rect x="81" y="388" width="520" height="1" fill="#1E1E2E"/>
+
+    <!-- Item 4 -->
+    <text x="81" y="425" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7">04</text>
+    <text x="120" y="425" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{{TOC_ITEM_4_TITLE}}</text>
+    <text x="120" y="450" font-family="Lato, Arial, sans-serif" font-size="16" fill="#64748B">{{TOC_ITEM_4_DESC}}</text>
+    <rect x="81" y="468" width="520" height="1" fill="#1E1E2E"/>
+  </g>
+
+  <!-- Right column -->
+  <g>
+    <!-- Item 5 -->
+    <text x="680" y="185" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7">05</text>
+    <text x="719" y="185" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{{TOC_ITEM_5_TITLE}}</text>
+    <text x="719" y="210" font-family="Lato, Arial, sans-serif" font-size="16" fill="#64748B">{{TOC_ITEM_5_DESC}}</text>
+    <rect x="680" y="228" width="520" height="1" fill="#1E1E2E"/>
+
+    <!-- Item 6 -->
+    <text x="680" y="265" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7">06</text>
+    <text x="719" y="265" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{{TOC_ITEM_6_TITLE}}</text>
+    <text x="719" y="290" font-family="Lato, Arial, sans-serif" font-size="16" fill="#64748B">{{TOC_ITEM_6_DESC}}</text>
+    <rect x="680" y="308" width="520" height="1" fill="#1E1E2E"/>
+
+    <!-- Item 7 -->
+    <text x="680" y="345" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7">07</text>
+    <text x="719" y="345" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{{TOC_ITEM_7_TITLE}}</text>
+    <text x="719" y="370" font-family="Lato, Arial, sans-serif" font-size="16" fill="#64748B">{{TOC_ITEM_7_DESC}}</text>
+    <rect x="680" y="388" width="520" height="1" fill="#1E1E2E"/>
+
+    <!-- Item 8 -->
+    <text x="680" y="425" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7">08</text>
+    <text x="719" y="425" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{{TOC_ITEM_8_TITLE}}</text>
+    <text x="719" y="450" font-family="Lato, Arial, sans-serif" font-size="16" fill="#64748B">{{TOC_ITEM_8_DESC}}</text>
+    <rect x="680" y="468" width="520" height="1" fill="#1E1E2E"/>
+  </g>
+
+  <!-- Footer -->
+  <text x="81" y="675" font-family="Lato, Arial, sans-serif" font-size="13" fill="#64748B">{{SOURCE}}</text>
+  <text x="1199" y="675" text-anchor="end" font-family="Lato, Arial, sans-serif" font-size="13" fill="#64748B">{{PAGE_NUM}}</text>
+</svg>

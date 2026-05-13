@@ -120,6 +120,27 @@ grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
 ```
 
 > All chart templates in `templates/charts/` include this marker as a reference. If you are drawing a chart and the marker is absent, you have a bug.
+
+### 3.2 Slot Markers for Text Elements (MANDATORY for content text)
+
+Every user-facing `<text>` element MUST carry a `data-slot="<group>.<role>"` attribute. This populates the per-slide `slides/*.md` text source layer (see [`slides-text-layer.md`](slides-text-layer.md)) which lets users edit text without touching SVG layout.
+
+```xml
+<g id="metric-card">
+  <text data-slot="metric.label"  x="..." y="...">FPS</text>
+  <text data-slot="metric.value"  x="..." y="...">134–160</text>
+  <text data-slot="metric.unit"   x="..." y="...">at 1080p</text>
+</g>
+```
+
+**Rules**:
+- Slot path uses dot notation; first segment usually matches the parent `<g id="...">`; second segment is a meaningful role (`title`, `subtitle`, `body1`, `caption`, `formula`, `label`, etc.). Avoid positional indexes (`metric-card.1`) when generating new content — they survive bootstrap but lose semantic meaning.
+- Slot paths must be unique within a single SVG file (not globally).
+- **Skip slots** on: `<g id="footer">` text (auto-content), pure decoration (background, dividers, accent rects).
+- **Avoid `<tspan>`** in slot-tagged texts — text containing `<tspan>` is not currently extractable. If you need bold/colored runs inline, split into adjacent plain `<text>` elements, each with its own slot.
+
+If you skip slot markers when generating, the user can run `python scripts/slides_init.py <project_path>` to bootstrap positional slots automatically — but semantic slot names from the start are far more useful for downstream editing.
+
 - **Technical specs**: see [shared-standards.md](shared-standards.md) for SVG/PPT constraints
 - **Visual depth — through restraint**: layered depth comes from rhythm (flat vs lifted, dense vs spacious), not from shadows everywhere. Apply shadow to at most 2-3 genuinely floating elements per page (cards on photos, primary CTA, overlays); keep peer-grid cards, dividers, body containers flat. Reach for typography weight, spacing, accent bars, subtle tints **before** shadow. Full rules in shared-standards.md §6.
 

@@ -58,6 +58,10 @@ description: >
 | `${SKILL_DIR}/scripts/finalize_svg.py` | SVG post-processing (unified entry) |
 | `${SKILL_DIR}/scripts/svg_to_pptx.py` | Export to PPTX |
 | `${SKILL_DIR}/scripts/update_spec.py` | Propagate a `spec_lock.md` color / font_family change across all generated SVGs |
+| `${SKILL_DIR}/scripts/slides_init.py` | Bootstrap `data-slot=...` markers on existing SVGs (one-time per project) |
+| `${SKILL_DIR}/scripts/slides_extract.py` | SVG → `slides/*.md` (extract per-slide text source) |
+| `${SKILL_DIR}/scripts/slides_apply.py` | `slides/*.md` → SVG (apply per-slide text edits) |
+| `${SKILL_DIR}/scripts/slides_plan_refresh.py` | `slides/*.md` → `slides/_plan.md` (one-way derive: refresh §4 chapter structure + §5 per-slide title cells; never touches narrative / transitions / risks) |
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
@@ -339,6 +343,10 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 
 > Post-export iteration: whenever the user asks to change anything on a generated slide ("改一下", "调字号", "那里看着不对", "把图片换大点"), the [`visual-edit`](workflows/visual-edit.md) workflow is available — surface it as an option. If the user describes the change with enough specificity to apply directly ("第 3 页副标题字号改 32"), edit the SVG directly instead; if they're vaguely pointing at "somewhere" on the deck, run the workflow.
 
+> Text-only iteration: for **text-only edits** (rewording, fixing typos, swapping labels), prefer the slides text layer (`slides/*.md`) over editing SVG directly. See [`references/slides-text-layer.md`](references/slides-text-layer.md). Workflow: edit `slides/<NN>_<name>.md` → `python scripts/slides_apply.py <project_path>` → re-run `finalize_svg.py` + `svg_to_pptx.py`. For SVGs without `data-slot` markers (older projects), bootstrap once with `python scripts/slides_init.py <project_path>` then `slides_extract.py`. **Truth policy**: last-modified-wins; sync is always explicit. Never auto-sync. **Layout-affecting changes** (font size, position, color, structure) still go through the SVG.
+>
+> Plan companion (`slides/_plan.md`): a project-level planning doc holding narrative spine, suggested transitions, risk register, image-placeholder inventory, references, and timing. Its §4 chapter structure and §5 per-slide title cells **derive from `slides/*.md`** — refresh after slot edits with `python scripts/slides_plan_refresh.py <project_path>`. The refresh is **one-way** (slides → plan); human-authored sections (narrative, transitions, risks) are never touched. There is no plan → slides direction.
+
 ---
 
 ## Role Switching Protocol
@@ -361,6 +369,7 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 | Canvas format specification | `references/canvas-formats.md` |
 | Image layout specification | `references/image-layout-spec.md` |
 | SVG image embedding | `references/svg-image-embedding.md` |
+| Slides text layer (slot-based text source) | `references/slides-text-layer.md` |
 | Icon library | `templates/icons/README.md` |
 
 ---

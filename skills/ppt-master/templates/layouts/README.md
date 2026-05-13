@@ -1,4 +1,4 @@
-# Page Layout Template Library (21 Templates)
+# Page Layout Template Library (22 Templates)
 
 Pre-built PPT page layout templates supporting multiple styles and use cases.
 
@@ -27,6 +27,7 @@ Pre-built PPT page layout templates supporting multiple styles and use cases.
 | `academic_defense` | Scenario | Thesis defense, academic reports, grant proposals | Deep Blue + Red accents | Clear hierarchy, academic standards |
 | `psychology_attachment` | Scenario | Psychotherapy training, counseling lectures | Blue-green gradient + Colorful semantic colors | Warm professional, therapeutic feel |
 | `medical_university` | Scenario | Medical reports, case discussions, research presentations | Medical Blue `#0066B3` | Professional rigorous, life-affirming |
+| `research_dark` | Scenario | CVPR-style research talks, AI method highlights, benchmark results | Purple `#A855F7` on near-black | Cinematic, technical, Poppins+Lato, high-contrast |
 | `government_red` | Government/Enterprise | Government work reports, party-building presentations | Government Red `#8B0000` | Solemn authority, grand and imposing |
 | `government_blue` | Government/Enterprise | Smart cities, open governance, digital transformation | Tech Blue `#0050B3` | Modern tech, rigorous and rational |
 | `ai_ops` | Government/Enterprise | Telecom AI ops, IT system overview, digital intelligence solutions | Telecom Red `#C00000` + Blue `#2E75B6` | High information density, modular layout, telecom style |
@@ -75,6 +76,7 @@ Designed for **specific use cases**, with content structures tailored to scenari
 | `academic_defense` | Academic defense, clear research content hierarchy |
 | `psychology_attachment` | Psychotherapy theme, warm and professional color palette |
 | `medical_university` | Hospital / medical university template, suitable for medical reports |
+| `research_dark` | Cinematic dark research template (Poppins + Lato), modelled on `Research_presen_dark.pptx`, suited for CVPR / NeurIPS paper talks |
 | `重庆大学` | Chongqing University template, blending mountain-city layered imagery with modern academic style |
 
 ### 4. Government & Enterprise Templates

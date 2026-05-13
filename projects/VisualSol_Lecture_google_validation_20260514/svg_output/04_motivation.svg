@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g id="background">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+  <g id="header">
+    <rect x="0" y="0" width="320" height="6" fill="#4285F4"/>
+    <rect x="320" y="0" width="320" height="6" fill="#EA4335"/>
+    <rect x="640" y="0" width="320" height="6" fill="#FBBC04"/>
+    <rect x="960" y="0" width="320" height="6" fill="#34A853"/>
+    <text data-slot="header.1" x="72" y="92" font-family="Arial, sans-serif" font-size="46" font-weight="700" fill="#1A237E">Why Now?</text>
+    <rect x="72" y="116" width="150" height="4" fill="#4285F4"/>
+    <rect x="222" y="116" width="70" height="4" fill="#EA4335"/>
+    <rect x="292" y="116" width="70" height="4" fill="#FBBC04"/>
+    <rect x="362" y="116" width="170" height="4" fill="#34A853"/>
+  </g>
+  <g id="hero-statement">
+    <rect x="72" y="160" width="1136" height="92" rx="18" fill="#F8F9FA" stroke="#E8EAED" stroke-width="2"/>
+    <text data-slot="hero-statement.1" x="640" y="205" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#1A237E" text-anchor="middle">The bottleneck is shifting.</text>
+    <text data-slot="hero-statement.2" x="640" y="235" font-family="Arial, sans-serif" font-size="20" fill="#5F6368" text-anchor="middle">From per-scene optimization to real-time universal inference to generative world simulation</text>
+  </g>
+  <g id="pillar-1">
+    <rect x="72" y="300" width="350" height="210" rx="18" fill="#FFFFFF" stroke="#4285F4" stroke-width="3"/>
+    <text data-slot="pillar-1.1" x="100" y="354" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1A237E">Real-time 3D</text>
+    <text data-slot="pillar-1.2" x="100" y="392" font-family="Arial, sans-serif" font-size="20" fill="#5F6368">AR, robotics, digital twins, and autonomous driving demand instant 3D.</text>
+  </g>
+  <g id="pillar-2">
+    <rect x="465" y="300" width="350" height="210" rx="18" fill="#FFFFFF" stroke="#EA4335" stroke-width="3"/>
+    <text data-slot="pillar-2.1" x="493" y="354" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1A237E">Quality to speed</text>
+    <text data-slot="pillar-2.2" x="493" y="392" font-family="Arial, sans-serif" font-size="20" fill="#5F6368">NeRF proved quality, 3DGS proved speed, and feed-forward methods target scale.</text>
+  </g>
+  <g id="pillar-3">
+    <rect x="858" y="300" width="350" height="210" rx="18" fill="#FFFFFF" stroke="#34A853" stroke-width="3"/>
+    <text data-slot="pillar-3.1" x="886" y="354" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1A237E">World models</text>
+    <text data-slot="pillar-3.2" x="886" y="392" font-family="Arial, sans-serif" font-size="20" fill="#5F6368">Reconstruction becomes a substrate for generation, simulation, and interaction.</text>
+  </g>
+  <g id="footer">
+    <text x="72" y="675" font-family="Arial, sans-serif" font-size="14" fill="#9AA0A6">VisualSol Template Validation</text>
+    <text x="1208" y="675" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#9AA0A6">04 / 06</text>
+  </g>
+</svg>

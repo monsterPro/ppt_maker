@@ -93,13 +93,6 @@ GENERIC_FONT_MAP = {
     'serif': 'Times New Roman',
 }
 
-# When the latin font is serif and no EA font is specified,
-# prefer SimSun (serif CJK) over Microsoft YaHei (sans-serif CJK).
-_SERIF_LATIN = {
-    'Times New Roman', 'Georgia', 'Garamond', 'Palatino', 'Palatino Linotype',
-    'Book Antiqua', 'Cambria', 'SimSun', 'Liberation Serif', 'DejaVu Serif',
-}
-
 # SVG stroke-dasharray -> DrawingML prstDash
 DASH_PRESETS = {
     '4,4': 'dash',  '4 4': 'dash',
@@ -237,9 +230,14 @@ def parse_font_family(font_family_str: str) -> dict[str, str]:
 
     Prioritizes Windows-available fonts since PPTX is primarily opened on
     Windows. macOS/Linux-only fonts are mapped via FONT_FALLBACK_WIN.
+
+    When the SVG declares only a Latin/web font stack such as
+    ``Poppins, Arial, sans-serif``, keep the East Asian slot on the same
+    typeface. PowerPoint may otherwise prefer the EA slot and display English
+    text as Microsoft YaHei even though the Latin slot is correct.
     """
     if not font_family_str:
-        return {'latin': 'Segoe UI', 'ea': 'Microsoft YaHei'}
+        return {'latin': 'Segoe UI', 'ea': 'Segoe UI'}
 
     fonts = [f.strip().strip("'\"") for f in font_family_str.split(',')]
     latin_font = None
@@ -265,9 +263,11 @@ def parse_font_family(font_family_str: str) -> dict[str, str]:
 
     final_latin = latin_font or 'Segoe UI'
 
-    # EA must always be a CJK-capable font
+    # Preserve explicit CJK font choices, but do not invent Microsoft YaHei for
+    # Latin-only text runs. Correct run language metadata decides when the EA
+    # slot is used.
     if not ea_font:
-        ea_font = 'SimSun' if final_latin in _SERIF_LATIN else 'Microsoft YaHei'
+        ea_font = final_latin
 
     return {'latin': final_latin, 'ea': ea_font}
 

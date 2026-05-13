@@ -82,6 +82,129 @@ def parse_transform(transform_str: str) -> tuple[float, float, float, float, flo
     return dx, dy, sx, sy, angle_deg
 
 
+def _text_content(elem: ET.Element) -> str:
+    return ''.join(elem.itertext()).strip()
+
+
+def _slot_prefix(elem: ET.Element) -> str | None:
+    slot = elem.get('data-slot') or ''
+    match = re.match(r'^(.+)\.(\d+)$', slot)
+    if not match:
+        return None
+    return match.group(1)
+
+
+def _text_float(elem: ET.Element, name: str, default: float = 0.0) -> float:
+    try:
+        return float(elem.get(name, default))
+    except (TypeError, ValueError):
+        return default
+
+
+def _svg_dimension(root: ET.Element, name: str, fallback: float) -> float:
+    raw = root.get(name)
+    if not raw:
+        return fallback
+    match = re.match(r'^\s*([-\d.]+)', raw)
+    if not match:
+        return fallback
+    try:
+        return float(match.group(1))
+    except ValueError:
+        return fallback
+
+
+def _is_master_managed_footer_element(elem: ET.Element, root: ET.Element) -> bool:
+    """Detect standalone footer/page-number text that the master now owns."""
+    tag = elem.tag.replace(f'{{{SVG_NS}}}', '')
+    elem_id = (elem.get('id') or '').lower()
+    if tag == 'g' and _is_chrome_id(elem_id) and 'footer' in elem_id:
+        return True
+    if tag != 'text':
+        return False
+
+    text = _text_content(elem)
+    slot = (elem.get('data-slot') or '').lower()
+    if 'footer' in slot or 'pagenumber' in slot or 'page-number' in slot:
+        return True
+    if not re.fullmatch(r'\d+\s*/\s*\d+', text):
+        return False
+
+    width = _svg_dimension(root, 'width', 1280)
+    height = _svg_dimension(root, 'height', 720)
+    x = _text_float(elem, 'x')
+    y = _text_float(elem, 'y')
+    return x >= width * 0.82 and y >= height * 0.86
+
+
+def _compatible_text_lines(first: ET.Element, second: ET.Element) -> bool:
+    """Return True when two SVG text nodes look like wrapped lines."""
+    if _slot_prefix(first) != _slot_prefix(second):
+        return False
+    if not _text_content(first) or not _text_content(second):
+        return False
+
+    comparable_attrs = (
+        'x', 'font-family', 'font-size', 'font-weight',
+        'font-style', 'fill', 'fill-opacity', 'text-anchor',
+    )
+    for attr in comparable_attrs:
+        if (first.get(attr) or '') != (second.get(attr) or ''):
+            return False
+
+    font_size = _text_float(first, 'font-size', 16)
+    y_gap = _text_float(second, 'y') - _text_float(first, 'y')
+    return font_size * 0.75 <= y_gap <= font_size * 1.6
+
+
+def _merge_text_run(run: list[ET.Element]) -> ET.Element:
+    merged = ET.Element(run[0].tag, dict(run[0].attrib))
+    merged.set('data-consolidate', 'true')
+    merged.text = None
+    for line in run:
+        tspan = ET.SubElement(
+            merged,
+            f'{{{SVG_NS}}}tspan' if line.tag.startswith('{') else 'tspan',
+            {
+                'x': line.get('x', ''),
+                'y': line.get('y', ''),
+                'data-line': 'true',
+            },
+        )
+        tspan.text = _text_content(line)
+    return merged
+
+
+def _merge_adjacent_text_elements(children: list[ET.Element]) -> list[ET.Element]:
+    """Merge adjacent wrapped SVG text lines into one editable PPT text box."""
+    merged_children: list[ET.Element] = []
+    current_run: list[ET.Element] = []
+
+    def flush() -> None:
+        nonlocal current_run
+        if len(current_run) > 1:
+            merged_children.append(_merge_text_run(current_run))
+        elif current_run:
+            merged_children.append(current_run[0])
+        current_run = []
+
+    for child in children:
+        tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        if tag != 'text' or list(child):
+            flush()
+            merged_children.append(child)
+            continue
+
+        if current_run and _compatible_text_lines(current_run[-1], child):
+            current_run.append(child)
+        else:
+            flush()
+            current_run = [child]
+
+    flush()
+    return merged_children
+
+
 # ---------------------------------------------------------------------------
 # Group handling
 # ---------------------------------------------------------------------------
@@ -103,7 +226,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     child_ctx = ctx.child(dx, dy, sx, sy, filter_id, style_overrides)
 
     child_results: list[ShapeResult] = []
-    for child in elem:
+    for child in _merge_adjacent_text_elements(list(elem)):
         result = convert_element(child, child_ctx)
         if result:
             child_results.append(result)
@@ -270,9 +393,13 @@ def convert_svg_to_slide_shapes(
     # fallback when no <g id="..."> groups are present at the root.
     fallback_targets: list = []
 
-    for child in root:
+    for child in _merge_adjacent_text_elements(list(root)):
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if tag == 'defs':
+            continue
+        if tag == 'g' and (child.get('id') or '').lower() in {'background', 'footer'}:
+            continue
+        if _is_master_managed_footer_element(child, root):
             continue
         result = convert_element(child, ctx)
         if result:

@@ -5,8 +5,8 @@ from __future__ import annotations
 import hashlib
 import re
 import shutil
-import tempfile
 import xml.etree.ElementTree as ET
+import uuid
 import zipfile
 from pathlib import Path
 
@@ -23,6 +23,7 @@ from .pptx_media import (
     PNG_RENDERER,
     get_png_renderer_info, convert_svg_to_png,
 )
+from .pptx_master import enhance_existing_master
 from .pptx_notes import (
     markdown_to_plain_text,
     create_notes_slide_xml, create_notes_slide_rels_xml,
@@ -79,6 +80,202 @@ def _append_relationship(
         f.write(rels_content)
 
     return next_rid
+
+
+def _detect_footer_text(svg_files: list[Path]) -> str:
+    """Best-effort deck footer detection from generated SVG chrome."""
+    ns = {'svg': 'http://www.w3.org/2000/svg'}
+    page_number_re = re.compile(r'^\s*\d+\s*/\s*\d+\s*$')
+
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except Exception:
+            continue
+
+        for group in root.findall(".//svg:g", ns) + root.findall(".//g"):
+            elem_id = (group.get("id") or "").lower()
+            if elem_id != "footer":
+                continue
+            for text_elem in group.findall("svg:text", ns) + group.findall("text"):
+                text = "".join(text_elem.itertext()).strip()
+                if text and not page_number_re.match(text):
+                    return text
+    return ""
+
+
+def _detect_background_color(svg_files: list[Path]) -> str | None:
+    """Best-effort master background color from the first full-slide SVG rect."""
+    ns = {'svg': 'http://www.w3.org/2000/svg'}
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except Exception:
+            continue
+        for rect in root.findall(".//svg:rect", ns) + root.findall(".//rect"):
+            fill = (rect.get("fill") or "").strip()
+            if re.fullmatch(r"#[0-9A-Fa-f]{6}", fill):
+                return fill
+    return None
+
+
+def _gradient_coord(value: str | None, default: float) -> float:
+    if not value:
+        return default
+    raw = value.strip()
+    try:
+        if raw.endswith('%'):
+            return float(raw[:-1]) / 100
+        parsed = float(raw)
+        return parsed / 100 if parsed > 1 else parsed
+    except ValueError:
+        return default
+
+
+def _gradient_offset(value: str | None) -> int:
+    if not value:
+        return 0
+    raw = value.strip()
+    try:
+        if raw.endswith('%'):
+            return round(float(raw[:-1]) * 1000)
+        parsed = float(raw)
+        return round(parsed * 100000 if parsed <= 1 else parsed * 1000)
+    except ValueError:
+        return 0
+
+
+def _stop_style_values(stop: ET.Element) -> tuple[str | None, float]:
+    color = stop.get('stop-color')
+    opacity = 1.0
+    if stop.get('stop-opacity') is not None:
+        try:
+            opacity = float(stop.get('stop-opacity', '1'))
+        except ValueError:
+            opacity = 1.0
+    style = stop.get('style') or ''
+    for part in style.split(';'):
+        key, sep, value = part.partition(':')
+        if not sep:
+            continue
+        key = key.strip()
+        value = value.strip()
+        if key == 'stop-color':
+            color = value
+        elif key == 'stop-opacity':
+            try:
+                opacity = float(value)
+            except ValueError:
+                pass
+    return color, opacity
+
+
+def _detect_master_glows(svg_files: list[Path]) -> list[dict[str, object]]:
+    """Read full-slide SVG radial gradients so the master mirrors the template."""
+    ns = {'svg': 'http://www.w3.org/2000/svg'}
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except Exception:
+            continue
+        defs = {
+            elem.get('id'): elem
+            for elem in root.findall(".//svg:radialGradient", ns) + root.findall(".//radialGradient")
+            if elem.get('id')
+        }
+        if not defs:
+            continue
+
+        viewbox_dims = get_viewbox_dimensions(svg_path)
+        width, height = viewbox_dims if viewbox_dims else (1280, 720)
+        glows: list[dict[str, object]] = []
+        for rect in root.findall(".//svg:rect", ns) + root.findall(".//rect"):
+            fill = (rect.get('fill') or '').strip()
+            match = re.match(r'url\(#([^)]+)\)', fill)
+            if not match:
+                continue
+            grad = defs.get(match.group(1))
+            if grad is None:
+                continue
+            try:
+                if float(rect.get('width', '0')) < width * 0.95 or float(rect.get('height', '0')) < height * 0.95:
+                    continue
+            except ValueError:
+                continue
+
+            stops: list[tuple[int, str, int]] = []
+            for stop in list(grad):
+                if stop.tag.split('}', 1)[-1] != 'stop':
+                    continue
+                color, opacity = _stop_style_values(stop)
+                if not color or not re.fullmatch(r'#[0-9A-Fa-f]{6}', color):
+                    continue
+                stops.append((
+                    _gradient_offset(stop.get('offset')),
+                    color.lstrip('#').upper(),
+                    max(0, min(100000, round(opacity * 100000))),
+                ))
+            if stops:
+                glows.append({
+                    'id': match.group(1),
+                    'cx': _gradient_coord(grad.get('cx'), 0.5),
+                    'cy': _gradient_coord(grad.get('cy'), 0.5),
+                    'r': _gradient_coord(grad.get('r'), 0.5),
+                    'stops': stops,
+                })
+        if glows:
+            return glows
+    return []
+
+
+def _load_design_tokens(svg_files: list[Path]) -> dict[str, dict[str, str]]:
+    """Load colors/typography from the project spec_lock.md when available."""
+    tokens: dict[str, dict[str, str]] = {'colors': {}, 'typography': {}}
+    if not svg_files:
+        return tokens
+
+    project_dir = svg_files[0].parent.parent
+    spec_path = project_dir / 'spec_lock.md'
+    if not spec_path.exists():
+        return tokens
+
+    section: str | None = None
+    for raw_line in spec_path.read_text(encoding='utf-8').splitlines():
+        line = raw_line.strip()
+        if line == '## colors':
+            section = 'colors'
+            continue
+        if line == '## typography':
+            section = 'typography'
+            continue
+        if line.startswith('## '):
+            section = None
+            continue
+        if section and line.startswith('- ') and ':' in line:
+            key, value = line[2:].split(':', 1)
+            tokens[section][key.strip()] = value.strip()
+
+    return tokens
+
+
+def _slide_layout_target(extract_dir: Path, slide_num: int) -> str:
+    """Return the layout target already assigned by python-pptx."""
+    rels_path = extract_dir / 'ppt' / 'slides' / '_rels' / f'slide{slide_num}.xml.rels'
+    if not rels_path.exists():
+        return '../slideLayouts/slideLayout7.xml'
+
+    try:
+        rels_xml = rels_path.read_text(encoding='utf-8')
+    except Exception:
+        return '../slideLayouts/slideLayout7.xml'
+
+    match = re.search(
+        r'Type="http://schemas\.openxmlformats\.org/officeDocument/2006/relationships/slideLayout"\s+Target="([^"]+)"',
+        rels_xml,
+    )
+    if match:
+        return match.group(1)
+    return '../slideLayouts/slideLayout7.xml'
 
 
 def _add_default_content_type(content_types: str, extension: str, content_type: str) -> str:
@@ -247,7 +444,10 @@ def create_pptx_with_native_svg(
             print(f"  Speaker notes: Disabled")
         print()
 
-    temp_dir = Path(tempfile.mkdtemp())
+    temp_root = output_path.parent / ".pptx_build_tmp"
+    temp_root.mkdir(parents=True, exist_ok=True)
+    temp_dir = temp_root / f"build_{uuid.uuid4().hex}"
+    temp_dir.mkdir(parents=True, exist_ok=False)
 
     try:
         # Create base PPTX with python-pptx
@@ -267,6 +467,16 @@ def create_pptx_with_native_svg(
         with zipfile.ZipFile(base_pptx, 'r') as zf:
             zf.extractall(extract_dir)
 
+        enhance_existing_master(
+            extract_dir,
+            width_emu=width_emu,
+            height_emu=height_emu,
+            footer_text=_detect_footer_text(svg_files),
+            background_color=_detect_background_color(svg_files),
+            design_tokens=_load_design_tokens(svg_files),
+            master_glows=_detect_master_glows(svg_files),
+        )
+
         media_dir = extract_dir / 'ppt' / 'media'
         media_dir.mkdir(exist_ok=True)
 
@@ -280,6 +490,7 @@ def create_pptx_with_native_svg(
 
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
+            slide_layout_target = _slide_layout_target(extract_dir, slide_num)
 
             try:
                 # ---- Native shapes mode ----
@@ -373,7 +584,7 @@ def create_pptx_with_native_svg(
 
                     rels_xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>{extra_rels}
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="{slide_layout_target}"/>{extra_rels}
 </Relationships>'''
                     with open(rels_path, 'w', encoding='utf-8') as f:
                         f.write(rels_xml)
@@ -428,6 +639,7 @@ def create_pptx_with_native_svg(
                         png_rid=png_rid, png_filename=png_filename,
                         svg_rid=svg_rid, svg_filename=svg_filename,
                         use_compat_mode=(use_compat_mode and slide_has_png),
+                        slide_layout_target=slide_layout_target,
                     )
                     with open(rels_path, 'w', encoding='utf-8') as f:
                         f.write(rels_xml)

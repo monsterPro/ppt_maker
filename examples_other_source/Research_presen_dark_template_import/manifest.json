@@ -1,0 +1,402 @@
+{
+  "source": {
+    "pptx": "C:/Users/JGKim/Desktop/ai_agents/ppt_maker/ppt-master/examples_other_source/Research_presen_dark.pptx",
+    "name": "Research_presen_dark.pptx"
+  },
+  "slideSize": {
+    "width_emu": 12192000,
+    "height_emu": 6858000,
+    "width_px": 1280,
+    "height_px": 720
+  },
+  "theme": {
+    "colors": {
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#1F497D",
+      "lt2": "#EEECE1",
+      "accent1": "#4F81BD",
+      "accent2": "#C0504D",
+      "accent3": "#9BBB59",
+      "accent4": "#8064A2",
+      "accent5": "#4BACC6",
+      "accent6": "#F79646",
+      "hlink": "#0000FF",
+      "folHlink": "#800080"
+    },
+    "fonts": {
+      "majorLatin": "Arial",
+      "minorLatin": "Arial"
+    }
+  },
+  "assets": {
+    "exportDir": "assets",
+    "commonAssets": [
+      "image23.png"
+    ],
+    "allAssets": [
+      "image1.png",
+      "image10.png",
+      "image11.png",
+      "image12.png",
+      "image13.png",
+      "image14.png",
+      "image15.png",
+      "image16.png",
+      "image17.png",
+      "image18.png",
+      "image19.png",
+      "image2.png",
+      "image20.png",
+      "image21.png",
+      "image22.png",
+      "image23.png",
+      "image24.png",
+      "image25.png",
+      "image3.png",
+      "image4.png",
+      "image5.png",
+      "image6.png",
+      "image7.png",
+      "image8.png",
+      "image9.png"
+    ]
+  },
+  "referenceStructures": {
+    "json": "master_layout_refs.json",
+    "analysis": "master_layout_analysis.md",
+    "layoutCount": 1,
+    "masterCount": 1
+  },
+  "pageTypeCandidates": {
+    "chapter_candidate": [
+      2,
+      9,
+      10,
+      11
+    ],
+    "content_candidate": [
+      4,
+      5,
+      6,
+      8,
+      12
+    ],
+    "cover_candidate": [
+      1
+    ],
+    "ending_candidate": [
+      13
+    ],
+    "toc_candidate": [
+      3,
+      7
+    ]
+  },
+  "slides": [
+    {
+      "index": 1,
+      "name": "slide1.xml",
+      "slidePath": "ppt/slides/slide1.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image11.png"
+      ],
+      "textSamples": [
+        "RESEARCH INTELLIGENCE",
+        "VISTA4D",
+        "Video Reshooting with 4D-Grounded Point Clouds",
+        "Eyeline Labs • Kuan Heng Lin • Jiajun Wu"
+      ],
+      "textCount": 4,
+      "shapeCount": 8,
+      "pageType": "cover_candidate"
+    },
+    {
+      "index": 2,
+      "name": "slide2.xml",
+      "slidePath": "ppt/slides/slide2.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image5.png"
+      ],
+      "textSamples": [
+        "Technical Foundations",
+        "Breaking down the limitations of prior methods and the Vista4D architectural shift."
+      ],
+      "textCount": 2,
+      "shapeCount": 5,
+      "pageType": "chapter_candidate"
+    },
+    {
+      "index": 3,
+      "name": "slide3.xml",
+      "slidePath": "ppt/slides/slide3.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image4.png"
+      ],
+      "textSamples": [
+        "Latent Instability",
+        "Implicit models (CamClone, TrajectoryCrafter) rely on latent camera conditioning. While visually clean, they cannot strictly enforce the",
+        "target trajectory",
+        ", leading to content drift in complex motions.",
+        "Geometric Noise",
+        "Explicit methods (EX-4D, GEN3C) provide better control but suffer from"
+      ],
+      "textCount": 6,
+      "shapeCount": 11,
+      "pageType": "toc_candidate"
+    },
+    {
+      "index": 4,
+      "name": "slide4.xml",
+      "slidePath": "ppt/slides/slide4.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image1.png",
+        "image12.png",
+        "image14.png",
+        "image18.png"
+      ],
+      "textSamples": [
+        "Vista4D grounds reshooting in a",
+        "Temporally Persistent 4D Point Cloud",
+        "to provide a rigid geometric anchor for generative synthesis.",
+        "Explicit Grounding:",
+        "Visible scene geometry is encoded across time to guide the diffusion model.",
+        "Artifact Correction:"
+      ],
+      "textCount": 6,
+      "shapeCount": 12,
+      "pageType": "content_candidate"
+    },
+    {
+      "index": 5,
+      "name": "slide5.xml",
+      "slidePath": "ppt/slides/slide5.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image21.png",
+        "image3.png"
+      ],
+      "textSamples": [
+        "TEMPORAL PERSISTENCE",
+        "Unlike per-frame depth methods, Vista4D accumulates",
+        "static scene context",
+        "across the entire video sequence.",
+        "This allows for geometric grounding even when the target camera has zero pixel overlap with the current source frame, providing a stable spatial \"anchor\" for large viewpoint shifts.",
+        "Zero-Drift Spatial Mapping"
+      ],
+      "textCount": 6,
+      "shapeCount": 10,
+      "pageType": "content_candidate"
+    },
+    {
+      "index": 6,
+      "name": "slide6.xml",
+      "slidePath": "ppt/slides/slide6.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image16.png",
+        "image2.png",
+        "image17.png",
+        "image8.png",
+        "image22.png",
+        "image6.png"
+      ],
+      "textSamples": [
+        "Decomposition",
+        "Separating dynamic actors from static background pixels to build persistent 4D context.",
+        "Noisy Training",
+        "Training on artifact-laden renders to ensure robustness to imperfect geometric inputs at inference.",
+        "Plücker Rays",
+        "Injecting precise camera parameters as ray embeddings into every transformer block."
+      ],
+      "textCount": 6,
+      "shapeCount": 17,
+      "pageType": "content_candidate"
+    },
+    {
+      "index": 7,
+      "name": "slide7.xml",
+      "slidePath": "ppt/slides/slide7.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png"
+      ],
+      "textSamples": [
+        "170K",
+        "Video Clips",
+        "Hybrid Data Strategy",
+        "Vista4D leverages 170,000 multi-camera clips (ground-truth targets) alongside large-scale 4D-reconstructed monocular internet video from the OpenVidHD-1.0 dataset.",
+        "This ensures the model generalizes across diverse visual content while maintaining precise trajectory adherence.",
+        "DATA & TRAINING SCALE"
+      ],
+      "textCount": 6,
+      "shapeCount": 10,
+      "pageType": "toc_candidate"
+    },
+    {
+      "index": 8,
+      "name": "slide8.xml",
+      "slidePath": "ppt/slides/slide8.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png"
+      ],
+      "textSamples": [
+        "Vista4D achieves state-of-the-art camera accuracy and video realism simultaneously.",
+        "Method",
+        "RotE (Deg) ↓",
+        "TransE ↓",
+        "FVD ↓",
+        "LPIPS ↓"
+      ],
+      "textCount": 6,
+      "shapeCount": 27,
+      "pageType": "content_candidate"
+    },
+    {
+      "index": 9,
+      "name": "slide9.xml",
+      "slidePath": "ppt/slides/slide9.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image7.png"
+      ],
+      "textSamples": [
+        "Lower rotation error reflects tighter adherence to the specified target camera path.",
+        "PRECISION: ROTATION ERROR (ROTE)"
+      ],
+      "textCount": 2,
+      "shapeCount": 7,
+      "pageType": "chapter_candidate"
+    },
+    {
+      "index": 10,
+      "name": "slide10.xml",
+      "slidePath": "ppt/slides/slide10.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image9.png",
+        "image10.png"
+      ],
+      "textSamples": [
+        "Wan2.1-T2V Scale",
+        "The model architecture is built on the 14B parameter Wan2.1 video diffusion prior. By fine-tuning the camera encoder and projector layers, Vista4D gains a deep understanding of spatial geometry while maintaining the base model's world-class motion synthesis capability.",
+        "GENERATIVE TRANSFORMER BACKBONE"
+      ],
+      "textCount": 3,
+      "shapeCount": 9,
+      "pageType": "chapter_candidate"
+    },
+    {
+      "index": 11,
+      "name": "slide11.xml",
+      "slidePath": "ppt/slides/slide11.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png"
+      ],
+      "textSamples": [
+        "\"Vista4D resolves the fundamental tension between explicit geometric control and generative imagination in video reshooting.\"",
+        "— Eyeline Labs Research Briefing 2026",
+        "\""
+      ],
+      "textCount": 3,
+      "shapeCount": 6,
+      "pageType": "chapter_candidate"
+    },
+    {
+      "index": 12,
+      "name": "slide12.xml",
+      "slidePath": "ppt/slides/slide12.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image15.png",
+        "image13.png",
+        "image25.png"
+      ],
+      "textSamples": [
+        "Questions?",
+        "Explore the 4D reshooting future.",
+        "github.com/vista4d",
+        "arXiv:2604.21915"
+      ],
+      "textCount": 4,
+      "shapeCount": 10,
+      "pageType": "content_candidate"
+    },
+    {
+      "index": 13,
+      "name": "slide13.xml",
+      "slidePath": "ppt/slides/slide13.xml",
+      "layoutPath": "ppt/slideLayouts/slideLayout1.xml",
+      "masterPath": "ppt/slideMasters/slideMaster1.xml",
+      "backgroundAsset": null,
+      "backgroundSource": null,
+      "imageAssets": [
+        "image23.png",
+        "image20.png",
+        "image24.png",
+        "image19.png"
+      ],
+      "textSamples": [
+        "https://derivative.ca/sites/default/files/styles/project_teaser/public/field/image/Capture-Resemble-6.jpg",
+        "Source:",
+        "derivative.ca",
+        "https://www.mdpi.com/remotesensing/remotesensing-16-00773/article_deploy/html/images/remotesensing-16-00773-g003-550.jpg",
+        "Source:",
+        "www.mdpi.com"
+      ],
+      "textCount": 6,
+      "shapeCount": 20,
+      "pageType": "ending_candidate"
+    }
+  ]
+}

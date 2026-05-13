@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <radialGradient id="bgGlow" cx="85%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.20"/>
+      <stop offset="45%" stop-color="#4C1D95" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#05050A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgGlow2" cx="10%" cy="88%" r="55%">
+      <stop offset="0%" stop-color="#1E40AF" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#05050A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#05050A"/>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGlow)"/>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGlow2)"/>
+
+  <!-- Chapter number label -->
+  <text x="640" y="248" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#A855F7" text-anchor="middle" letter-spacing="3">{{CHAPTER_NUM}}</text>
+
+  <!-- Short accent divider -->
+  <rect x="580" y="264" width="120" height="1" fill="#A855F7" fill-opacity="0.55"/>
+
+  <!-- Chapter title -->
+  <text x="640" y="370" font-family="Poppins, Arial, sans-serif" font-size="72" font-weight="700" fill="#FFFFFF" text-anchor="middle">{{CHAPTER_TITLE}}</text>
+
+  <!-- Chapter subtitle / English label -->
+  <text x="640" y="428" font-family="Lato, Arial, sans-serif" font-size="22" fill="#94A3B8" text-anchor="middle">{{CHAPTER_TITLE_EN}}</text>
+</svg>

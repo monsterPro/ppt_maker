@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="sectionBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1A73E8"/>
+      <stop offset="100%" stop-color="#0D47A1"/>
+    </linearGradient>
+  </defs>
+  <g id="background">
+    <rect x="0" y="0" width="1280" height="720" fill="url(#sectionBg)"/>
+    <circle cx="1090" cy="130" r="80" fill="#FBBC04" fill-opacity="0.18"/>
+    <circle cx="155" cy="610" r="110" fill="#34A853" fill-opacity="0.16"/>
+  </g>
+  <g id="chapter-number">
+    <text data-slot="chapter-number.1" x="640" y="248" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="3">CHAPTER 01</text>
+    <rect x="580" y="264" width="120" height="4" fill="#FFFFFF" fill-opacity="0.80"/>
+  </g>
+  <g id="chapter-title">
+    <text data-slot="chapter-title.1" x="640" y="370" font-family="Arial, sans-serif" font-size="64" font-weight="700" fill="#FFFFFF" text-anchor="middle">What is 3D Reconstruction?</text>
+  </g>
+  <g id="chapter-subtitle">
+    <text data-slot="chapter-subtitle.1" x="640" y="428" font-family="Arial, sans-serif" font-size="26" fill="#E8F0FE" text-anchor="middle">Definition, scope, and the representation landscape</text>
+  </g>
+</svg>
