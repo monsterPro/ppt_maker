@@ -165,6 +165,17 @@ projects/VisualSol_Lecture_google_validation_20260514/validation_report.md
 - Generated project folders are ignored by default because they can grow large.
 - Keep `AGENTS.md` as the canonical instructions file for coding agents.
 
+## Original Source
+
+This repository is a fork of the original PPT Master source code:
+
+```text
+https://github.com/hugohe3/ppt-master
+```
+
+Local changes in this fork focus on editable PPTX export, Slide Master support,
+template validation, and workflow cleanup.
+
 ## License
 
 This repository keeps the original MIT license. See `LICENSE`.
